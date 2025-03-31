@@ -22,10 +22,12 @@ public class NewTest {
     public void setup() {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+
     }
 
     @Test
-    public void verifyBlockTitle() {
+    public void title() {
         driver.get("https://www.mts.by/");
         WebElement block = driver.findElement(By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/h2"));
 
@@ -36,7 +38,7 @@ public class NewTest {
         assertEquals(expectedTitle, actualTitle, "Название блока не совпадает");
     }
     @Test
-    public void checkLogos() {
+    public void logos() {
         driver.get("https://www.mts.by/");
 
         List<WebElement> logos = wait.until(ExpectedConditions
@@ -50,15 +52,16 @@ public class NewTest {
                         "Не найдено ни одного логотипа"));
     }
     @Test
-    public void checkDetailsLink() {
+    public void servis() {
         driver.get("https://www.mts.by/");
-        WebElement link = driver.findElement(By.partialLinkText("Подробнее о сервисе"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+        WebElement link = driver.findElement(By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/a"));
         link.click();
         Assertions.assertEquals("https://www.mts.by/help/poryadok-oplaty-i-bezopasnost-internet-platezhey/",
                                 driver.getCurrentUrl());
     }
     @Test
-    public void testContinueButton() {
+    public void testButton() {
         driver.get("https://www.mts.by/");
         WebElement phoneInput = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.presenceOfElementLocated(
