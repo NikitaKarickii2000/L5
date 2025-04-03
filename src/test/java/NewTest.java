@@ -25,10 +25,21 @@ public class NewTest {
         driver.manage().window().maximize();
 
     }
+    private void acceptCookies() {
+        try {
+            WebElement cookieAcceptButton = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//*[@id=\"cookie-agree\"]")));
+            cookieAcceptButton.click();
+            wait.until(ExpectedConditions.invisibilityOf(cookieAcceptButton));
+        } catch (Exception e) {
+            System.out.println("Кнопка принятия файлов cookie не найдена или неактивна: " + e.getMessage());
+        }
+    }
 
     @Test
     public void title() {
         driver.get("https://www.mts.by/");
+        acceptCookies();
         WebElement block = driver.findElement(By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/h2"));
 
         String expectedTitle = "Онлайн пополнение\n" +
@@ -40,6 +51,7 @@ public class NewTest {
     @Test
     public void logos() {
         driver.get("https://www.mts.by/");
+        acceptCookies();
 
         List<WebElement> logos = wait.until(ExpectedConditions
                 .presenceOfAllElementsLocatedBy(
@@ -54,6 +66,7 @@ public class NewTest {
     @Test
     public void servis() {
         driver.get("https://www.mts.by/");
+        acceptCookies();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
         WebElement link = driver.findElement(By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/a"));
         link.click();
@@ -63,6 +76,7 @@ public class NewTest {
     @Test
     public void testButton() {
         driver.get("https://www.mts.by/");
+        acceptCookies();
         WebElement phoneInput = new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.presenceOfElementLocated(
                         By.cssSelector("#connection-phone")
