@@ -93,38 +93,30 @@ public class MTSHomePageTest {
         homePage.open();
         homePage.acceptCookies();
 
-        // Select Communication Services option
         homePage.clickPaymentOptionsButton();
         homePage.selectCommunicationServicesOption();
 
-        // Добавляем паузу после выбора опции
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Fill in details and proceed to payment page
         homePage.enterPhoneNumber(TEST_PHONE_NUMBER);
         homePage.enterAmount(TEST_AMOUNT);
         homePage.clickContinueButton();
 
-        // Вызываем явно метод ожидания контейнера оплаты
         homePage.waitForPaymentContainer();
 
-        // Проверяем текущий URL для диагностики
         System.out.println("URL после ожидания контейнера оплаты: " + homePage.getCurrentUrl());
 
-        // Дополнительное ожидание для уверенности, что страница оплаты загрузилась
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Выполняем только самую основную проверку, чтобы тест не падал
         try {
-            // Проверяем, что находимся на странице оплаты
             assertTrue(homePage.getCurrentUrl().contains("payment")
                     || homePage.getCurrentUrl().contains("oplata")
                     || homePage.getCurrentUrl().contains("pay"));
@@ -132,7 +124,7 @@ public class MTSHomePageTest {
             System.out.println("Предупреждение: URL не содержит ожидаемых фрагментов.");
             System.out.println("Текущий URL: " + homePage.getCurrentUrl());
         }
-    } // <-- Здесь отсутствовала закрывающая скобка
+    }
 
     @AfterEach
     public void teardown() {

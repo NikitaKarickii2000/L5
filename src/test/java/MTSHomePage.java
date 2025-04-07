@@ -11,7 +11,6 @@ public class MTSHomePage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    // Element locators
     private final By cookieAcceptButtonLocator = By.xpath("//*[@id=\"cookie-agree\"]");
     private final By onlinePaymentBlockTitleLocator = By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/h2");
     private final By logosListLocator = By.cssSelector("#pay-section > div > div > div.col-12.col-xl-8 > section > div > div.pay__partners > ul");
@@ -20,14 +19,12 @@ public class MTSHomePage {
     private final By sumInputLocator = By.xpath("//*[@id='connection-sum']");
     private final By continueButtonLocator = By.xpath("//*[@id=\"pay-connection\"]/button");
 
-    // Payment options locators
     private final By paymentOptionsButtonLocator = By.xpath("//*[@id='pay-section']/div/div/div[2]/section/div/div[1]/div[1]/div[2]/button");
     private final By communicationServicesOptionLocator = By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/div[1]/div[1]/div[2]/ul/li[1]/p");
     private final By homeInternetOptionLocator = By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/div[1]/div[1]/div[2]/ul/li[2]/p");
     private final By installmentOptionLocator = By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/div[1]/div[1]/div[2]/ul/li[3]/p");
     private final By debtOptionLocator = By.xpath("//*[@id=\"pay-section\"]/div/div/div[2]/section/div/div[1]/div[1]/div[2]/ul/li[4]/p");
 
-    // Payment page locators - обновленные локаторы
     private final By paymentContainerLocator = By.xpath("//app-payment-container | //div[contains(@class, 'payment-wrapper')]");
     private final By displayedAmountLocator = By.xpath("//app-payment-container//span[contains(@class, 'amount')] | //div[contains(@class, 'amount')]");
     private final By payButtonAmountLocator = By.xpath("//button[contains(@class, 'pay-button')] | //button[contains(text(), 'Заплатить')]");
@@ -87,7 +84,6 @@ public class MTSHomePage {
 
     public void clickContinueButton() {
         try {
-            // Закрываем возможные всплывающие окна
             try {
                 WebElement closePopup = driver.findElement(By.xpath("//button[contains(@class, 'close')] | //div[contains(@class, 'close')]"));
                 if (closePopup.isDisplayed()) {
@@ -95,26 +91,21 @@ public class MTSHomePage {
                     Thread.sleep(1000);
                 }
             } catch (Exception e) {
-                // Если всплывающего окна нет, просто продолжаем
             }
 
             WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(continueButtonLocator));
-            // Прокручиваем страницу к кнопке, чтобы она была видна
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript(
                     "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", continueButton);
 
             Thread.sleep(1500);
 
-            // Пробуем сначала клик с помощью JavaScript
             ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", continueButton);
 
-            // На всякий случай проверяем и делаем обычный клик
             if (continueButton.isEnabled() && continueButton.isDisplayed()) {
                 Thread.sleep(500);
                 continueButton.click();
             }
 
-            // Ожидаем завершения перехода на новую страницу
             Thread.sleep(5000);
         } catch (Exception e) {
             System.out.println("Ошибка при нажатии на кнопку: " + e.getMessage());
@@ -157,24 +148,19 @@ public class MTSHomePage {
         return option.getText();
     }
 
-    // Payment page methods
 
     public void waitForPaymentContainer() {
         try {
-            // Проверяем изменение URL как признак перехода на страницу оплаты
             String currentUrl = driver.getCurrentUrl();
             System.out.println("Текущий URL: " + currentUrl);
 
-            // Добавляем паузу перед проверкой видимости
             Thread.sleep(3000);
 
-            // Добавляем проверку наличия iframe
             try {
                 java.util.List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
                 if (!iframes.isEmpty()) {
                     System.out.println("Найдено " + iframes.size() + " iframe");
 
-                    // Переключаемся на первый iframe
                     driver.switchTo().frame(0);
                     Thread.sleep(1000);
                     System.out.println("Переключились на iframe");
@@ -183,11 +169,9 @@ public class MTSHomePage {
                 System.out.println("Ошибка при проверке iframe: " + e.getMessage());
             }
 
-            // Используем более общие локаторы
             try {
                 boolean containerFound = false;
 
-                // Пробуем разные варианты локаторов для страницы оплаты
                 String[] possibleLocators = {
                         "//app-payment-container",
                         "//div[contains(@class, 'payment-wrapper')]",
@@ -206,12 +190,10 @@ public class MTSHomePage {
                             break;
                         }
                     } catch (Exception e) {
-                        // Продолжаем проверку следующих локаторов
                     }
                 }
 
                 if (!containerFound) {
-                    // Делаем скриншот для диагностики
                     try {
                         org.openqa.selenium.TakesScreenshot ts = (org.openqa.selenium.TakesScreenshot) driver;
                         java.io.File screenshot = ts.getScreenshotAs(org.openqa.selenium.OutputType.FILE);
@@ -231,7 +213,6 @@ public class MTSHomePage {
                 System.out.println("Ошибка при поиске элементов страницы оплаты: " + e.getMessage());
             }
 
-            // Если переключились на iframe, возвращаемся в основной контекст
             driver.switchTo().defaultContent();
         } catch (Exception e) {
             System.out.println("Общая ошибка при ожидании контейнера оплаты: " + e.getMessage());
@@ -273,7 +254,6 @@ public class MTSHomePage {
         }
     }
 
-    // Method to perform common steps for payment flow
     public void initiatePaymentFlow(String phoneNumber, String amount) {
         enterPhoneNumber(phoneNumber);
         enterAmount(amount);
